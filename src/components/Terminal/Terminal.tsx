@@ -8,6 +8,7 @@
 import { useState, useRef, useEffect } from "react";
 import TerminalOutput, { type HistoryEntry } from "./TerminalOutput";
 import TerminalInput from "./TerminalInput";
+import { parseCommand } from "../../commands/parser";
 
 export default function Terminal() {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
@@ -25,22 +26,24 @@ export default function Terminal() {
   }, [history]);
 
   const handleCommand = (command: string) => {
-    // For now, just echo the command back.
-    // Tomorrow we'll replace this with a real command parser.
     const trimmed = command.trim();
 
     if (!trimmed) {
-      // Empty enter — just add a blank prompt line (like a real terminal)
       setHistory((prev) => [...prev, { command: "", output: "" }]);
+      return;
+    }
+
+    const result = parseCommand(trimmed);
+
+    // "clear" is a special action: it wipes history instead of adding to it
+    if (result.action === "clear") {
+      setHistory([]);
       return;
     }
 
     setHistory((prev) => [
       ...prev,
-      {
-        command: trimmed,
-        output: `Command not found: ${trimmed}. (Coming soon!)`,
-      },
+      { command: trimmed, output: result.output ?? "" },
     ]);
   };
 
