@@ -1,9 +1,13 @@
 // TerminalOutput renders all the lines of history — previous commands and their results.
-// Each entry has: the command the user typed, and the output it produced.
+// Each entry has: the command the user typed, the output it produced,
+// and the cwd at the time (so the prompt shows the right directory).
+
+import Prompt from "./Prompt";
 
 type HistoryEntry = {
   command: string;
   output: string;
+  cwd: string;
 };
 
 type TerminalOutputProps = {
@@ -17,10 +21,7 @@ export default function TerminalOutput({ history }: TerminalOutputProps) {
         <div key={index}>
           {/* The command line — shows what the user typed */}
           <div className="flex">
-            <span className="text-green-400">user@linux-trainer</span>
-            <span className="text-gray-400">:</span>
-            <span className="text-blue-400">~</span>
-            <span className="text-gray-400">$ </span>
+            <Prompt cwd={entry.cwd} />
             <span className="text-gray-100">{entry.command}</span>
           </div>
 

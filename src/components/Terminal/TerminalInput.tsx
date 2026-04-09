@@ -3,12 +3,14 @@
 // When the user presses Enter, it fires onSubmit with the typed command.
 
 import { useState, useRef, useEffect } from "react";
+import Prompt from "./Prompt";
 
 type TerminalInputProps = {
+  cwd: string;
   onSubmit: (command: string) => void;
 };
 
-export default function TerminalInput({ onSubmit }: TerminalInputProps) {
+export default function TerminalInput({ cwd, onSubmit }: TerminalInputProps) {
   // useState stores the current text in the input field.
   // Every time the user types, setInput updates the value,
   // and React re-renders the component with the new text.
@@ -35,10 +37,7 @@ export default function TerminalInput({ onSubmit }: TerminalInputProps) {
   return (
     <div className="flex items-center">
       {/* The prompt — styled to look like a real terminal */}
-      <span className="text-green-400">user@linux-trainer</span>
-      <span className="text-gray-400">:</span>
-      <span className="text-blue-400">~</span>
-      <span className="text-gray-400">$ </span>
+      <Prompt cwd={cwd} />
 
       {/* The actual text input — styled to be invisible (no border, no background)
           so it looks like part of the terminal, not a form field */}

@@ -9,9 +9,11 @@ import { useState, useRef, useEffect } from "react";
 import TerminalOutput, { type HistoryEntry } from "./TerminalOutput";
 import TerminalInput from "./TerminalInput";
 import { parseCommand } from "../../commands/parser";
+import { getCwd } from "../../filesystem/state";
 
 export default function Terminal() {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [cwd, setCwdState] = useState(getCwd());
 
   // Ref to the scrollable container — we'll auto-scroll to the bottom
   // every time a new command is added, just like a real terminal.
@@ -28,8 +30,11 @@ export default function Terminal() {
   const handleCommand = (command: string) => {
     const trimmed = command.trim();
 
+    // Capture cwd BEFORE the command runs (this is what the prompt showed)
+    const cwdAtEntry = getCwd();
+
     if (!trimmed) {
-      setHistory((prev) => [...prev, { command: "", output: "" }]);
+      setHistory((prev) => [...prev, { command: "", output: "", cwd: cwdAtEntry }]);
       return;
     }
 
@@ -38,13 +43,18 @@ export default function Terminal() {
     // "clear" is a special action: it wipes history instead of adding to it
     if (result.action === "clear") {
       setHistory([]);
+      // Sync cwd state after clear (cwd itself doesn't reset)
+      setCwdState(getCwd());
       return;
     }
 
     setHistory((prev) => [
       ...prev,
-      { command: trimmed, output: result.output ?? "" },
+      { command: trimmed, output: result.output ?? "", cwd: cwdAtEntry },
     ]);
+
+    // Update React state to reflect any cwd change (e.g. after "cd")
+    setCwdState(getCwd());
   };
 
   // Re-focus the input when clicking anywhere in the terminal.
@@ -62,13 +72,13 @@ export default function Terminal() {
     >
       {/* Welcome message — like when you first open a terminal */}
       <div className="text-gray-500 mb-4">
-        <div>Welcome to Linux Terminal Trainer v0.1</div>
+        <div>Welcome to Linux Terminal Trainer v0.2</div>
         <div>Type a command and press Enter. Try "help" to get started.</div>
         <div className="mt-1">---</div>
       </div>
 
       <TerminalOutput history={history} />
-      <TerminalInput onSubmit={handleCommand} />
+      <TerminalInput cwd={cwd} onSubmit={handleCommand} />
     </div>
   );
 }
