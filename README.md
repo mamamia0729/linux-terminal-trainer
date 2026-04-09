@@ -2,6 +2,8 @@
 
 An interactive web-based Linux terminal simulator that helps beginners learn CLI commands in the browser.
 
+**[Try it live](https://linux-terminal-trainer-psi.vercel.app)**
+
 ## Features
 
 - Realistic terminal UI with command input and output history
@@ -13,6 +15,7 @@ An interactive web-based Linux terminal simulator that helps beginners learn CLI
 - React + TypeScript
 - Tailwind CSS v4
 - Vite
+- Deployed on Vercel
 
 ## Getting Started
 
@@ -27,12 +30,16 @@ Then open http://localhost:5173 in your browser.
 
 ## Roadmap
 
-- Command parser with pwd, clear, help
-- Simulated filesystem (ls, cd, cat, mkdir, touch, rm)
-- Command history navigation (arrow keys)
-- Tab autocomplete
-- Guided lessons and challenges
-- Deploy on Vercel
+- [x] Terminal UI with input, output, auto-scroll
+- [ ] Command parser with pwd, clear, help
+- [ ] Simulated filesystem (ls, cd, cat, mkdir, touch, rm)
+- [ ] Command history navigation (arrow keys)
+- [ ] Tab autocomplete
+- [ ] Guided lessons and challenges
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
 
 ## Author
 
