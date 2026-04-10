@@ -88,7 +88,7 @@ export function resolvePath(path: string): FsNode | null {
 
   for (const segment of segments) {
     if (current.type !== "folder") return null;
-    const child = current.children[segment];
+    const child: FsNode | undefined = current.children[segment];
     if (!child) return null;
     current = child;
   }

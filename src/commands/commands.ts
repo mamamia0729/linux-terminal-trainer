@@ -5,7 +5,6 @@
 // Think of it like a dictionary: { "pwd": pwdFunction, "ls": lsFunction, ... }
 
 import { resolvePath, normalizePath } from "../filesystem/fileSystem";
-import type { FolderNode } from "../filesystem/fileSystem";
 import { getCwd, setCwd } from "../filesystem/state";
 
 type CommandFn = (args: string[]) => string;
