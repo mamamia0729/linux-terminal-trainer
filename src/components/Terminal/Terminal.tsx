@@ -10,8 +10,13 @@ import TerminalOutput, { type HistoryEntry } from "./TerminalOutput";
 import TerminalInput from "./TerminalInput";
 import { parseCommand } from "../../commands/parser";
 import { getCwd } from "../../filesystem/state";
+import type { TaskCheck } from "../../lessons/types";
 
-export default function Terminal() {
+type TerminalProps = {
+  onCommandExecuted?: (entry: TaskCheck) => void;
+};
+
+export default function Terminal({ onCommandExecuted }: TerminalProps) {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [cwd, setCwdState] = useState(getCwd());
 
@@ -43,18 +48,23 @@ export default function Terminal() {
     // "clear" is a special action: it wipes history instead of adding to it
     if (result.action === "clear") {
       setHistory([]);
-      // Sync cwd state after clear (cwd itself doesn't reset)
       setCwdState(getCwd());
+      onCommandExecuted?.({ command: trimmed, output: "" });
       return;
     }
 
+    const output = result.output ?? "";
+
     setHistory((prev) => [
       ...prev,
-      { command: trimmed, output: result.output ?? "", cwd: cwdAtEntry },
+      { command: trimmed, output, cwd: cwdAtEntry },
     ]);
 
     // Update React state to reflect any cwd change (e.g. after "cd")
     setCwdState(getCwd());
+
+    // Notify parent so lessons can check task completion
+    onCommandExecuted?.({ command: trimmed, output });
   };
 
   // Re-focus the input when clicking anywhere in the terminal.
