@@ -1,4 +1,4 @@
-# Day 3 Walkthrough: Virtual Filesystem + ls, cd, cat
+# Day 3 Walkthrough: Virtual Filesystem, Guided Lessons, and Block Cursor
 
 Read this to understand everything we built on Day 3.
 Make sure you've read the Day 1 and Day 2 walkthroughs first.
@@ -7,17 +7,25 @@ Make sure you've read the Day 1 and Day 2 walkthroughs first.
 
 ## What we built
 
-On Day 2, we had `pwd`, `clear`, and `help`. But `pwd` always returned the same hardcoded path, and there was nothing to navigate. On Day 3, we built a **virtual filesystem** so the terminal feels like a real Linux environment.
+On Day 2, we had `pwd`, `clear`, and `help`. But `pwd` always returned the same hardcoded path, there was nothing to navigate, and there was no guidance for the user. Day 3 adds three big features:
 
-We created 3 new files:
+1. **Virtual filesystem** — a tree of folders and files with `ls`, `cd`, and `cat`
+2. **Guided lesson panel** — left sidebar with tasks, hints, and auto-checkmarks
+3. **Block cursor** — authentic Linux terminal look with a blinking block cursor
+
+We created 7 new files:
 - `src/filesystem/fileSystem.ts` - the filesystem tree and path helpers
 - `src/filesystem/state.ts` - tracks the current working directory
 - `src/components/Terminal/Prompt.tsx` - reusable prompt component
+- `src/lessons/types.ts` - lesson and task type definitions
+- `src/lessons/lessonList.ts` - lesson content with validation checks
+- `src/components/LessonPanel/LessonPanel.tsx` - the left sidebar UI
 
-And updated 4 files:
+And updated 5 files:
+- `src/App.tsx` - split-screen layout, lesson state management
 - `src/commands/commands.ts` - added ls, cd, cat, updated pwd and help
-- `src/components/Terminal/Terminal.tsx` - passes cwd to children, stores it in history
-- `src/components/Terminal/TerminalInput.tsx` - uses shared Prompt, receives cwd prop
+- `src/components/Terminal/Terminal.tsx` - passes cwd to children, notifies parent on command
+- `src/components/Terminal/TerminalInput.tsx` - block cursor, shared Prompt
 - `src/components/Terminal/TerminalOutput.tsx` - uses shared Prompt, stores cwd per entry
 
 ---
@@ -489,3 +497,279 @@ Prompt now shows: user@linux-trainer:~/documents$
 5. Discriminated union + type narrowing. TypeScript sees that `FsNode` has two variants distinguished by `type`. After checking `type === "file"`, it knows the node must be `FileNode`, which has a `content` field.
 
 6. Returning `null` is gentler than throwing. The caller can check for `null` and show a friendly error message. Throwing would crash the app unless every call site has a try/catch.
+
+---
+
+## The Guided Lesson System
+
+This is the feature that turns the app from a sandbox into a trainer. A left panel shows tasks, and the terminal validates commands in real time.
+
+### File: types.ts - The lesson data model
+
+```ts
+export type TaskCheck = {
+  command: string;
+  output: string;
+};
+
+export type LessonTask = {
+  id: string;
+  instruction: string;
+  hint: string;
+  check: (entry: TaskCheck) => boolean;
+};
+
+export type Lesson = {
+  id: string;
+  title: string;
+  description: string;
+  tasks: LessonTask[];
+};
+```
+
+**`check: (entry: TaskCheck) => boolean`**
+
+Each task has a `check` function that receives what the user typed and what the terminal output was. It returns `true` if the task is satisfied. This makes validation flexible — some tasks just check the command name, others also verify the output.
+
+**Why pass both command and output?**
+
+Consider `cat hostname`. You could type that from any directory, but it only works from `/etc`. By checking the output too, we can verify the task was actually completed successfully:
+
+```ts
+check: ({ command, output }) =>
+  command === "cat hostname" && output.includes("linux-trainer"),
+```
+
+### File: lessonList.ts - Lesson content
+
+```ts
+const lessons: Lesson[] = [
+  {
+    id: "basics",
+    title: "Lesson 1: Terminal Basics",
+    tasks: [
+      {
+        id: "basics-help",
+        instruction: "Type `help` to see all available commands",
+        hint: "Just type: help",
+        check: ({ command }) => command === "help",
+      },
+      // ... more tasks
+    ],
+  },
+  // ... more lessons
+];
+```
+
+**Data-driven design**
+
+Lessons are just data — arrays of objects. Adding a new lesson means adding another object to the array. No component code changes needed. This is the same pattern we used for commands: data and logic are separate.
+
+### File: LessonPanel.tsx - The sidebar UI
+
+```ts
+type LessonPanelProps = {
+  lessons: Lesson[];
+  currentLessonIndex: number;
+  completedTasks: Set<string>;
+  onSelectLesson: (index: number) => void;
+};
+```
+
+**`Set<string>` for completed tasks**
+
+We use a `Set` instead of an array for completed task IDs. Sets have O(1) lookup (`set.has(id)`), while arrays need O(n) search (`array.includes(id)`). For a small number of tasks it doesn't matter, but it's the right data structure for "is this item in the collection?" questions.
+
+**The completion check**
+
+```ts
+const allDone = lesson.tasks.every((t) => completedTasks.has(t.id));
+```
+
+`Array.every()` returns `true` only if every element passes the test. Here it checks if every task in the current lesson is in the completed set. When all tasks are done, we show a "Lesson complete!" message.
+
+### File: App.tsx - Where it all connects
+
+```ts
+function App() {
+  const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
+  const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
+
+  const handleCommandExecuted = useCallback(
+    (entry: TaskCheck) => {
+      const lesson = lessons[currentLessonIndex];
+
+      for (const task of lesson.tasks) {
+        if (task.check(entry)) {
+          setCompletedTasks((prev) => {
+            if (prev.has(task.id)) return prev;
+            const next = new Set(prev);
+            next.add(task.id);
+            return next;
+          });
+        }
+      }
+    },
+    [currentLessonIndex]
+  );
+
+  return (
+    <div className="flex h-screen">
+      <div className="w-[30%] min-w-[280px] max-w-[400px]">
+        <LessonPanel ... />
+      </div>
+      <div className="flex-1">
+        <Terminal onCommandExecuted={handleCommandExecuted} />
+      </div>
+    </div>
+  );
+}
+```
+
+### Concepts to understand
+
+**`useCallback` — Memoized function**
+
+`useCallback` wraps a function so React doesn't recreate it on every render. Without it, `handleCommandExecuted` would be a new function object every time App re-renders, which would cause Terminal to re-render too (since its prop changed). With `useCallback`, the function only changes when `currentLessonIndex` changes.
+
+**Immutable state updates with Set**
+
+React state must be updated immutably — you can't modify the existing Set, you must create a new one:
+
+```ts
+setCompletedTasks((prev) => {
+  if (prev.has(task.id)) return prev;  // Already done, no update needed
+  const next = new Set(prev);          // Create a new Set (copy)
+  next.add(task.id);                   // Add to the new Set
+  return next;                         // Replace old with new
+});
+```
+
+Why? React uses reference equality (`===`) to detect changes. If you mutate the existing Set and return it, `prev === next` is `true`, and React skips the re-render. Creating a new Set ensures React sees the change.
+
+**The callback pattern (child notifies parent)**
+
+Terminal doesn't know about lessons. It just calls `onCommandExecuted` after each command. App receives this callback and checks it against lesson tasks. This keeps Terminal focused on being a terminal, and App handles the lesson logic. This is called "inverse data flow" in React — data flows down (props), events flow up (callbacks).
+
+**`prev.has(task.id) return prev` — Skip unnecessary updates**
+
+If the task is already completed, we return the existing Set unchanged. This prevents a pointless re-render. It's a small optimization, but it's a good habit.
+
+---
+
+## The Block Cursor
+
+Real Linux terminals use a block cursor, not a thin vertical line. We can't style the browser's native caret as a block reliably, so we hide it and render our own.
+
+### How it works
+
+```ts
+const [cursorPos, setCursorPos] = useState(0);
+
+// Split text at the cursor position
+const beforeCursor = input.slice(0, cursorPos);
+const cursorChar = input[cursorPos] ?? " ";
+const afterCursor = input.slice(cursorPos + 1);
+
+return (
+  <>
+    <span className="text-gray-100">{beforeCursor}</span>
+    <span className="bg-green-400 text-gray-900 animate-blink">{cursorChar}</span>
+    <span className="text-gray-100">{afterCursor}</span>
+
+    {/* Hidden input captures actual keystrokes */}
+    <input className="absolute opacity-0 w-0 h-0" ... />
+  </>
+);
+```
+
+**The trick: hidden input + visible overlay**
+
+The real `<input>` is invisible (`opacity-0`, `w-0`, `h-0`). It captures keystrokes and selection events, but the user sees our custom-rendered text with a block cursor highlight.
+
+**`input[cursorPos] ?? " "`**
+
+When the cursor is at the end of the text, there's no character under it. We use `?? " "` to show a space character instead, giving the cursor block something to highlight. This matches real terminal behavior — the cursor always has a visible block, even on empty space.
+
+**CSS blink animation**
+
+```css
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+```
+
+`step-end` timing makes it snap between visible and hidden, rather than fading, just like a real terminal cursor.
+
+**`onSelect` for cursor position tracking**
+
+```ts
+const handleSelect = (e: React.SyntheticEvent<HTMLInputElement>) => {
+  const target = e.target as HTMLInputElement;
+  setCursorPos(target.selectionStart ?? input.length);
+};
+```
+
+The `onSelect` event fires whenever the cursor position changes (clicking, arrow keys, home/end). We read `selectionStart` from the hidden input and use it to position our visible block cursor.
+
+---
+
+## Updated data flow (with lessons)
+
+```
+User types "ls" in terminal
+
+        |
+        v
+TerminalInput → onSubmit("ls")
+        |
+        v
+Terminal.handleCommand("ls")
+  - parses, executes, adds to history
+  - calls onCommandExecuted({ command: "ls", output: "documents/  ..." })
+        |
+        v
+App.handleCommandExecuted
+  - loops through current lesson's tasks
+  - task "fs-ls" has check: ({ command }) => command === "ls"
+  - check returns true!
+  - setCompletedTasks adds "fs-ls" to the Set
+        |
+        v
+React re-renders LessonPanel
+  - "Use ls to see what's in your home directory" gets a green checkmark
+```
+
+---
+
+## Additional concepts from today
+
+| Concept | Example | What it means |
+|---------|---------|---------------|
+| useCallback | `useCallback(fn, [deps])` | Memoize a function to prevent unnecessary re-renders |
+| Set | `new Set<string>()` | Collection with O(1) lookup, no duplicates |
+| Set.every() | `tasks.every(t => set.has(t.id))` | True only if all elements pass the test |
+| Immutable update | `new Set(prev)` | Create a new copy instead of mutating |
+| Callback prop | `onCommandExecuted` | Child notifies parent of events (inverse data flow) |
+| Hidden input | `opacity-0 w-0 h-0` | Invisible but still captures keyboard events |
+| CSS animation | `@keyframes blink` | Define animation frames in CSS |
+
+---
+
+## Additional questions
+
+7. Why do we use `Set` instead of an array for completed tasks?
+8. What would happen if we mutated the Set instead of creating a new one?
+9. Why does `useCallback` take `[currentLessonIndex]` as a dependency?
+10. Why is the real `<input>` hidden instead of just styled with a block cursor?
+
+### Answers
+
+7. `Set.has()` is O(1) lookup, `Array.includes()` is O(n). Also, Sets prevent duplicates automatically.
+
+8. React wouldn't re-render. It compares the old and new state by reference (`===`). Mutating returns the same object, so React thinks nothing changed.
+
+9. Because the function uses `currentLessonIndex` to look up the current lesson. If the lesson changes, the function needs to be recreated to reference the new lesson. Without this dependency, it would keep checking the old lesson's tasks.
+
+10. Browser support for `caret-shape: block` is limited and inconsistent. The hidden input approach works everywhere and gives us full control over the cursor appearance and animation.
