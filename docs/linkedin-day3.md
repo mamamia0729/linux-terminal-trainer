@@ -1,6 +1,6 @@
 Day 3 of building my Linux Terminal Trainer, and it just went from sandbox to actual trainer.
 
-Yesterday it was just pwd, clear, and help. Today it has a guided lesson panel, a virtual filesystem, and a block cursor that makes it look like a real terminal.
+Yesterday it was just pwd, clear, and help. Today it has a guided lesson panel, a virtual filesystem, and real commands you can use to explore it.
 
 What's new:
 
@@ -8,7 +8,6 @@ What's new:
 - Guided lessons with step-by-step tasks and auto-checkmarks when you complete them
 - Virtual filesystem with folders and files you can explore
 - ls, cd, cat commands with proper error handling
-- Block cursor with blink animation, just like a real Linux terminal
 - Prompt updates dynamically to show your current directory
 
 The lesson system is data-driven. Each task has a check function that validates the user's command and output. Adding a new lesson is just adding an object to an array, no component changes needed.
