@@ -4,6 +4,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Prompt from "./Prompt";
+import { useCommandHistory } from "../../hooks/useCommandHistory";
 
 type TerminalInputProps = {
   cwd: string;
@@ -13,6 +14,7 @@ type TerminalInputProps = {
 export default function TerminalInput({ cwd, onSubmit }: TerminalInputProps) {
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const { push, goUp, goDown } = useCommandHistory();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -20,8 +22,17 @@ export default function TerminalInput({ cwd, onSubmit }: TerminalInputProps) {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
+      push(input);
       onSubmit(input);
       setInput("");
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault(); // prevent cursor from jumping to start of input
+      const prev = goUp(input);
+      if (prev !== null) setInput(prev);
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      const next = goDown(input);
+      if (next !== null) setInput(next);
     }
   };
 

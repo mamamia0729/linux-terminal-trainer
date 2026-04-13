@@ -6,6 +6,7 @@
 
 import { resolvePath, normalizePath } from "../filesystem/fileSystem";
 import { getCwd, setCwd } from "../filesystem/state";
+import { getHistory } from "./historyState";
 
 type CommandFn = (args: string[]) => string;
 
@@ -91,16 +92,43 @@ const commands: Record<string, CommandFn> = {
     return outputs.join("\n");
   },
 
+  // history — show numbered list of past commands
+  // In real bash, each command gets a number. You can see what you've done
+  // and how you got here. Great for beginners to review their work.
+  history: () => {
+    const entries = getHistory();
+    if (entries.length === 0) {
+      return "No commands in history yet.";
+    }
+
+    // Bash numbers history starting at 1, right-aligned
+    // Example:
+    //     1  ls
+    //     2  cd documents
+    //     3  cat readme.txt
+    return entries
+      .map((cmd, i) => {
+        const num = String(i + 1).padStart(5, " ");
+        return `${num}  ${cmd}`;
+      })
+      .join("\n");
+  },
+
   help: () =>
     [
       "Available commands:",
       "",
-      "  pwd      Print the current working directory",
-      "  ls       List directory contents",
-      "  cd       Change directory (cd .., cd /home, cd documents)",
-      "  cat      Display file contents (cat readme.txt)",
-      "  clear    Clear the terminal screen",
-      "  help     Show this help message",
+      "  pwd        Print the current working directory",
+      "  ls         List directory contents",
+      "  cd         Change directory (cd .., cd /home, cd documents)",
+      "  cat        Display file contents (cat readme.txt)",
+      "  history    Show your command history (numbered list)",
+      "  clear      Clear the terminal screen",
+      "  help       Show this help message",
+      "",
+      "Tips:",
+      "  ↑ / ↓      Press arrow keys to recall previous commands",
+      "  !!         Re-run your last command",
     ].join("\n"),
 };
 

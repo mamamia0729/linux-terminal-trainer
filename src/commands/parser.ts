@@ -7,6 +7,7 @@
 //           needs to handle itself (because clearing history = changing React state)
 
 import commands from "./commands";
+import { getLastCommand } from "./historyState";
 
 export type CommandResult = {
   output: string | null;
@@ -14,8 +15,31 @@ export type CommandResult = {
 };
 
 export function parseCommand(input: string): CommandResult {
+  let expanded = input.trim();
+
+  // !! (bang bang) — replace with the last command.
+  // In real bash, typing "!!" re-runs whatever you ran last.
+  // Bash also prints the expanded command so you can see what ran.
+  // Example: if your last command was "ls", typing "!!" shows:
+  //   ls
+  //   (output of ls)
+  if (expanded === "!!") {
+    const last = getLastCommand();
+    if (!last) {
+      return { output: "!!: event not found" };
+    }
+    // Recursively parse the expanded command
+    const result = parseCommand(last);
+    // Prepend the expanded command so the user sees what ran,
+    // just like bash does
+    if (result.output !== null) {
+      result.output = last + "\n" + result.output;
+    }
+    return result;
+  }
+
   // Split "pwd -a -b" into ["pwd", "-a", "-b"]
-  const parts = input.trim().split(/\s+/);
+  const parts = expanded.split(/\s+/);
   const command = parts[0].toLowerCase();
   const args = parts.slice(1);
 
