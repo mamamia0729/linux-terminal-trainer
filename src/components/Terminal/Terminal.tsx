@@ -82,7 +82,7 @@ export default function Terminal({ onCommandExecuted }: TerminalProps) {
     >
       {/* Welcome message — like when you first open a terminal */}
       <div className="text-gray-500 mb-4">
-        <div>Welcome to Linux Terminal Trainer v0.2</div>
+        <div>Welcome to Linux Terminal Trainer v0.3 — LPIC-1 Edition</div>
         <div>Type a command and press Enter. Try "help" to get started.</div>
         <div className="mt-1">---</div>
       </div>

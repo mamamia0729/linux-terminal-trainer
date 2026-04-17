@@ -40,6 +40,18 @@ export default function LessonPanel({
         </select>
       </div>
 
+      {/* LPIC topic badge */}
+      {lesson.topic && (
+        <div className="mb-4 flex items-center gap-2">
+          <span className="bg-blue-900/50 text-blue-300 text-xs font-mono px-2 py-1 rounded border border-blue-800">
+            LPIC-1 {lesson.topic}
+          </span>
+          {lesson.topicTitle && (
+            <span className="text-gray-500 text-xs">{lesson.topicTitle}</span>
+          )}
+        </div>
+      )}
+
       {/* Lesson description */}
       <p className="text-gray-400 text-sm mb-6 leading-relaxed">
         {lesson.description}

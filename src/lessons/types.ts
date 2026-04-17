@@ -20,5 +20,8 @@ export type Lesson = {
   id: string;
   title: string;
   description: string;
+  // LPIC-1 exam objective this lesson covers (e.g. "103.1")
+  topic?: string;
+  topicTitle?: string;
   tasks: LessonTask[];
 };
