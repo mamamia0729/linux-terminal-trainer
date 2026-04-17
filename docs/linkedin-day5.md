@@ -1,4 +1,4 @@
-Day 5: Linux Terminal Trainer-Now aligned to LPIC-1 certification
+Day 5: Linux Terminal Trainer, Now aligned to LPIC-1 certification
 
 Big update today. I realized building a terminal trainer without a clear goal is like studying without a syllabus. So I aligned the entire app to LPIC-1 exam objectives.
 
