@@ -111,6 +111,64 @@ const lessons: Lesson[] = [
     ],
   },
 
+  // ─── 103.2 Process text streams using filters (Weight: 2) ───
+  {
+    id: "103.2-filters",
+    title: "103.2, Text Filters",
+    description:
+      "LPIC-1 objective 103.2: Process text streams using filters. Learn head, tail, wc, sort, and cut to slice and dice text.",
+    topic: "103.2",
+    topicTitle: "Process text streams using filters",
+    tasks: [
+      {
+        id: "filter-cd",
+        instruction: "Navigate to `~/documents`: `cd ~/documents`",
+        hint: "Type: cd documents (from home) or cd /home/user/documents",
+        check: ({ command }) =>
+          command === "cd documents" ||
+          command === "cd /home/user/documents" ||
+          command === "cd ~/documents",
+      },
+      {
+        id: "filter-cat-todo",
+        instruction: "View the todo list: `cat todo.txt`",
+        hint: "Type: cat todo.txt",
+        check: ({ command }) => command === "cat todo.txt",
+      },
+      {
+        id: "filter-head",
+        instruction: "Show only the first 3 lines: `head -n 3 todo.txt`",
+        hint: "Type: head -n 3 todo.txt",
+        check: ({ command, output }) =>
+          command === "head -n 3 todo.txt" && output.includes("1."),
+      },
+      {
+        id: "filter-tail",
+        instruction: "Show only the last 2 lines: `tail -n 2 todo.txt`",
+        hint: "Type: tail -n 2 todo.txt",
+        check: ({ command }) => command === "tail -n 2 todo.txt",
+      },
+      {
+        id: "filter-wc",
+        instruction: "Count the lines in the file: `wc -l todo.txt`",
+        hint: "Type: wc -l todo.txt",
+        check: ({ command }) => command === "wc -l todo.txt",
+      },
+      {
+        id: "filter-wc-full",
+        instruction: "See full word count stats: `wc todo.txt`",
+        hint: "Type: wc todo.txt",
+        check: ({ command }) => command === "wc todo.txt",
+      },
+      {
+        id: "filter-sort",
+        instruction: "Sort the lines alphabetically: `sort todo.txt`",
+        hint: "Type: sort todo.txt",
+        check: ({ command }) => command === "sort todo.txt",
+      },
+    ],
+  },
+
   // ─── 103.3 Perform basic file management (Weight: 4) ───
   {
     id: "103.3-navigation",
@@ -285,64 +343,6 @@ const lessons: Lesson[] = [
         hint: "Type: which ls",
         check: ({ command, output }) =>
           command === "which ls" && output.includes("/usr/bin/ls"),
-      },
-    ],
-  },
-
-  // ─── 103.2 Process text streams using filters (Weight: 2) ───
-  {
-    id: "103.2-filters",
-    title: "103.2, Text Filters",
-    description:
-      "LPIC-1 objective 103.2: Process text streams using filters. Learn head, tail, wc, sort, and cut to slice and dice text.",
-    topic: "103.2",
-    topicTitle: "Process text streams using filters",
-    tasks: [
-      {
-        id: "filter-cd",
-        instruction: "Navigate to `~/documents`: `cd ~/documents`",
-        hint: "Type: cd documents (from home) or cd /home/user/documents",
-        check: ({ command }) =>
-          command === "cd documents" ||
-          command === "cd /home/user/documents" ||
-          command === "cd ~/documents",
-      },
-      {
-        id: "filter-cat-todo",
-        instruction: "View the todo list: `cat todo.txt`",
-        hint: "Type: cat todo.txt",
-        check: ({ command }) => command === "cat todo.txt",
-      },
-      {
-        id: "filter-head",
-        instruction: "Show only the first 3 lines: `head -n 3 todo.txt`",
-        hint: "Type: head -n 3 todo.txt",
-        check: ({ command, output }) =>
-          command === "head -n 3 todo.txt" && output.includes("1."),
-      },
-      {
-        id: "filter-tail",
-        instruction: "Show only the last 2 lines: `tail -n 2 todo.txt`",
-        hint: "Type: tail -n 2 todo.txt",
-        check: ({ command }) => command === "tail -n 2 todo.txt",
-      },
-      {
-        id: "filter-wc",
-        instruction: "Count the lines in the file: `wc -l todo.txt`",
-        hint: "Type: wc -l todo.txt",
-        check: ({ command }) => command === "wc -l todo.txt",
-      },
-      {
-        id: "filter-wc-full",
-        instruction: "See full word count stats: `wc todo.txt`",
-        hint: "Type: wc todo.txt",
-        check: ({ command }) => command === "wc todo.txt",
-      },
-      {
-        id: "filter-sort",
-        instruction: "Sort the lines alphabetically: `sort todo.txt`",
-        hint: "Type: sort todo.txt",
-        check: ({ command }) => command === "sort todo.txt",
       },
     ],
   },
