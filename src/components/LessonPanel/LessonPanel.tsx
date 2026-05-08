@@ -57,6 +57,24 @@ export default function LessonPanel({
         {lesson.description}
       </p>
 
+      {/* Progress bar */}
+      <div className="mb-4">
+        <div className="flex justify-between text-xs text-gray-400 mb-1">
+          <span>Progress</span>
+          <span>
+            {lesson.tasks.filter((t) => completedTasks.has(t.id)).length} / {lesson.tasks.length} tasks complete
+          </span>
+        </div>
+        <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-green-600 rounded-full transition-all duration-300"
+            style={{
+              width: `${(lesson.tasks.filter((t) => completedTasks.has(t.id)).length / lesson.tasks.length) * 100}%`,
+            }}
+          />
+        </div>
+      </div>
+
       {/* Task list */}
       <div className="flex-1">
         <h3 className="text-gray-500 text-xs uppercase tracking-wide mb-3">
