@@ -1,4 +1,4 @@
-# Day 4 — Command History (Arrow Keys, `history`, `!!`)
+# Day 4 - Command History (Arrow Keys, `history`, `!!`)
 
 ## What we built
 
@@ -19,7 +19,7 @@ The biggest design decision: where does the history data live?
 The `history` command is a plain function in `commands.ts`. The arrow key
 navigation lives in a React hook inside `TerminalInput`. Both need to read
 the same list of commands. React state can't be shared with plain functions,
-so we use the same pattern as the filesystem — a **module-level store**.
+so we use the same pattern as the filesystem - a **module-level store**.
 
 ```
 src/commands/historyState.ts    ← the single source of truth
@@ -45,8 +45,8 @@ const commandHistory: string[] = [];
 
 Adds a command to the list, with two rules:
 
-1. **Skip `!!`** — bash stores the expanded command, not the shortcut itself
-2. **Skip consecutive duplicates** — typing `ls` three times stores it once
+1. **Skip `!!`** - bash stores the expanded command, not the shortcut itself
+2. **Skip consecutive duplicates** - typing `ls` three times stores it once
    (this matches bash's default `HISTCONTROL=ignoredups` behavior)
 
 ```ts
@@ -63,10 +63,10 @@ export function pushHistory(command: string): void {
 
 ### Other exports
 
-- `getHistory()` — returns a copy of the full array (used by `history` command)
-- `getHistoryEntry(index)` — get one entry by position (used by arrow navigation)
-- `getHistoryLength()` — how many entries exist
-- `getLastCommand()` — the most recent entry (used by `!!`)
+- `getHistory()` - returns a copy of the full array (used by `history` command)
+- `getHistoryEntry(index)` - get one entry by position (used by arrow navigation)
+- `getHistoryLength()` - how many entries exist
+- `getLastCommand()` - the most recent entry (used by `!!`)
 
 ---
 
@@ -74,8 +74,8 @@ export function pushHistory(command: string): void {
 
 The hook no longer stores its own history array. It only manages two things:
 
-- **`index`** — where you are in the history as you press Up/Down
-- **`draft`** — what you were typing before you started pressing Up
+- **`index`** - where you are in the history as you press Up/Down
+- **`draft`** - what you were typing before you started pressing Up
 
 Think of it like a cursor in a text editor. The document (history) lives
 elsewhere. The cursor (index) just points at a line.
@@ -110,7 +110,7 @@ Added to `commands.ts`. Prints a numbered list just like bash:
     4  history
 ```
 
-Note that `history` includes itself in the list — that's because the command
+Note that `history` includes itself in the list - that's because the command
 gets recorded before it runs (TerminalInput calls `push` on Enter, then
 Terminal runs the command). This matches bash.
 
@@ -133,7 +133,7 @@ ls
 documents/  readme.txt
 ```
 
-The first line of `!!`'s output shows `ls` — that's bash telling you
+The first line of `!!`'s output shows `ls` - that's bash telling you
 "here's what I actually ran." This prevents confusion.
 
 `!!` is not stored in history. In bash, the expanded command is what gets
@@ -203,9 +203,9 @@ Beginners won't discover arrow keys or `!!` on their own. Putting them in
 
 1. `npm run dev`
 2. Type several commands: `ls`, `pwd`, `cd documents`, `ls`
-3. Press **Up** — should show `ls` (your last command)
-4. Keep pressing **Up** — walks backward through history
-5. Press **Down** — walks forward, restores your draft at the bottom
-6. Type `history` — should see a numbered list of everything you typed
-7. Type `!!` — should re-run your last command and show what it expanded to
-8. Type `ls` twice in a row, then `history` — only one `ls` entry (no duplicates)
+3. Press **Up** - should show `ls` (your last command)
+4. Keep pressing **Up** - walks backward through history
+5. Press **Down** - walks forward, restores your draft at the bottom
+6. Type `history` - should see a numbered list of everything you typed
+7. Type `!!` - should re-run your last command and show what it expanded to
+8. Type `ls` twice in a row, then `history` - only one `ls` entry (no duplicates)

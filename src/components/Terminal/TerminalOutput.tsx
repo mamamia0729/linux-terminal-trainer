@@ -1,4 +1,4 @@
-// TerminalOutput renders all the lines of history — previous commands and their results.
+// TerminalOutput renders all the lines of history - previous commands and their results.
 // Each entry has: the command the user typed, the output it produced,
 // and the cwd at the time (so the prompt shows the right directory).
 
@@ -19,13 +19,13 @@ export default function TerminalOutput({ history }: TerminalOutputProps) {
     <div>
       {history.map((entry, index) => (
         <div key={index}>
-          {/* The command line — shows what the user typed */}
+          {/* The command line - shows what the user typed */}
           <div className="flex">
             <Prompt cwd={entry.cwd} />
             <span className="text-gray-100">{entry.command}</span>
           </div>
 
-          {/* The output — what the command returned */}
+          {/* The output - what the command returned */}
           {entry.output && (
             <div className="text-gray-300 whitespace-pre-wrap">
               {entry.output}

@@ -1,4 +1,4 @@
-# Day 5 — LPIC-1 Alignment (18 New Commands, Pipes, Redirects)
+# Day 5 - LPIC-1 Alignment (18 New Commands, Pipes, Redirects)
 
 ## What we built
 
@@ -23,32 +23,32 @@ Each lesson now shows a blue badge with the LPIC-1 topic code (e.g. `LPIC-1 103.
 ## New commands added
 
 ### Environment commands
-- **`echo`** — prints text, supports `$VAR` expansion (e.g. `echo $HOME`)
-- **`export`** — sets environment variables (`export MYNAME=learner`)
-- **`env`** — shows all environment variables
-- **`which`** — shows the path of a command (`which grep` → `/usr/bin/grep`)
-- **`whoami`** — prints `user`
-- **`uname`** — prints system info (`uname -a` for full details)
+- **`echo`** - prints text, supports `$VAR` expansion (e.g. `echo $HOME`)
+- **`export`** - sets environment variables (`export MYNAME=learner`)
+- **`env`** - shows all environment variables
+- **`which`** - shows the path of a command (`which grep` → `/usr/bin/grep`)
+- **`whoami`** - prints `user`
+- **`uname`** - prints system info (`uname -a` for full details)
 
 ### File operation commands
-- **`touch`** — creates an empty file
-- **`mkdir`** — creates a new directory
-- **`cp`** — copies a file (`cp source dest`)
-- **`mv`** — moves or renames a file
-- **`rm`** — removes a file (`rm -r` for directories)
-- **`chmod`** — changes file permissions using octal mode (`chmod 755 file`)
+- **`touch`** - creates an empty file
+- **`mkdir`** - creates a new directory
+- **`cp`** - copies a file (`cp source dest`)
+- **`mv`** - moves or renames a file
+- **`rm`** - removes a file (`rm -r` for directories)
+- **`chmod`** - changes file permissions using octal mode (`chmod 755 file`)
 
 ### Text filter commands
-- **`head`** — shows first N lines (`head -n 3 file`)
-- **`tail`** — shows last N lines (`tail -n 2 file`)
-- **`wc`** — counts lines, words, characters (`wc -l file`)
-- **`sort`** — sorts lines alphabetically
-- **`uniq`** — filters adjacent duplicate lines (`uniq -c` for counts)
-- **`cut`** — extracts columns (`cut -d: -f1 file`)
+- **`head`** - shows first N lines (`head -n 3 file`)
+- **`tail`** - shows last N lines (`tail -n 2 file`)
+- **`wc`** - counts lines, words, characters (`wc -l file`)
+- **`sort`** - sorts lines alphabetically
+- **`uniq`** - filters adjacent duplicate lines (`uniq -c` for counts)
+- **`cut`** - extracts columns (`cut -d: -f1 file`)
 
 ### Search commands
-- **`grep`** — search text with regex, supports `-i`, `-c`, `-n`, `-v` flags
-- **`find`** — search for files by name pattern (`find . -name '*.txt'`)
+- **`grep`** - search text with regex, supports `-i`, `-c`, `-n`, `-v` flags
+- **`find`** - search for files by name pattern (`find . -name '*.txt'`)
 
 ---
 
@@ -93,7 +93,7 @@ The parser detects `>` or `>>` in the command, creates a new file node in the vi
 When `grep` runs normally, it reads from a file. When it's piped, it reads from stdin (the previous command's output). The `runCommandWithInput()` function handles this:
 
 - If `grep` has only a pattern (no file argument), it filters stdin
-- Same logic for `head`, `tail`, `wc`, `sort` — if no file argument, use stdin
+- Same logic for `head`, `tail`, `wc`, `sort` - if no file argument, use stdin
 
 This mirrors how real Unix commands work: they read from a file if given one, or from stdin if piped.
 
@@ -118,20 +118,20 @@ This enables `ls -l` to show permission strings and `chmod` to change them.
 
 ### New helper functions
 
-- **`resolveParent(path)`** — returns the parent folder and child name for a path. Used by `mkdir`, `touch`, `cp`, `mv`, `rm`, and redirect operations.
-- **`cloneNode(node)`** — deep-copies a filesystem node. Used by `cp` so the copy is independent of the original.
+- **`resolveParent(path)`** - returns the parent folder and child name for a path. Used by `mkdir`, `touch`, `cp`, `mv`, `rm`, and redirect operations.
+- **`cloneNode(node)`** - deep-copies a filesystem node. Used by `cp` so the copy is independent of the original.
 
 ### Expanded filesystem content
 
 Added new files to support the LPIC-1 lessons:
 
-- `~/documents/report.txt` — a server status report for text filter practice
-- `~/projects/server.py`, `config.yaml` — realistic project files
-- `~/scripts/backup.sh`, `cleanup.sh`, `deploy.sh` — shell scripts with varied permissions
-- `~/logs/access.log`, `error.log`, `auth.log` — log files for grep and pipe lessons
-- `/etc/hosts`, `/etc/passwd`, `/etc/fstab` — standard Linux config files
-- `/var/log/syslog` — system log for filesystem hierarchy lessons
-- `~/.bashrc`, `~/.profile` — hidden shell config files
+- `~/documents/report.txt` - a server status report for text filter practice
+- `~/projects/server.py`, `config.yaml` - realistic project files
+- `~/scripts/backup.sh`, `cleanup.sh`, `deploy.sh` - shell scripts with varied permissions
+- `~/logs/access.log`, `error.log`, `auth.log` - log files for grep and pipe lessons
+- `/etc/hosts`, `/etc/passwd`, `/etc/fstab` - standard Linux config files
+- `/var/log/syslog` - system log for filesystem hierarchy lessons
+- `~/.bashrc`, `~/.profile` - hidden shell config files
 
 ---
 
@@ -189,10 +189,10 @@ From 3 generic lessons to 5 LPIC-1-aligned lessons:
 | Old | New |
 |-----|-----|
 | Lesson 1: Terminal Basics | 103.1, Command Line Basics |
-| — | 103.1, Environment Variables |
+| - | 103.1, Environment Variables |
 | Lesson 2: Navigating the Filesystem | 103.3, Navigating the Filesystem |
 | Lesson 3: File Operations | 103.3, File Operations |
-| — | 103.3, Finding Files |
+| - | 103.3, Finding Files |
 
 ### Future lessons
 

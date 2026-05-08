@@ -1,4 +1,4 @@
-// App.tsx is the root component — everything starts here.
+// App.tsx is the root component - everything starts here.
 // It manages lesson state and renders the two-column layout:
 // LessonPanel on the left, Terminal on the right.
 

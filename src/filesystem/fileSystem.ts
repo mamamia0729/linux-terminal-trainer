@@ -1,7 +1,7 @@
 // The virtual filesystem is a tree of nodes.
 // Each node is either a "folder" (has children) or a "file" (has content).
 //
-// This is similar to how real filesystems work — directories contain
+// This is similar to how real filesystems work - directories contain
 // other directories and files, forming a tree structure.
 
 export type FileNode = {
@@ -199,8 +199,8 @@ export function cloneNode(node: FsNode): FsNode {
 // - ".." pops the last name off (go up one level)
 // - "." does nothing (stay in current directory)
 export function normalizePath(cwd: string, target: string): string {
-  // If target starts with /, it's absolute — start from root
-  // Otherwise, it's relative — start from the current directory
+  // If target starts with /, it's absolute - start from root
+  // Otherwise, it's relative - start from the current directory
   const base = target.startsWith("/") ? "" : cwd;
   const segments = (base + "/" + target).split("/").filter(Boolean);
 

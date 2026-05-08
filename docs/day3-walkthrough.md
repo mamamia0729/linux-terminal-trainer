@@ -9,9 +9,9 @@ Make sure you've read the Day 1 and Day 2 walkthroughs first.
 
 On Day 2, we had `pwd`, `clear`, and `help`. But `pwd` always returned the same hardcoded path, there was nothing to navigate, and there was no guidance for the user. Day 3 adds three big features:
 
-1. **Virtual filesystem** — a tree of folders and files with `ls`, `cd`, and `cat`
-2. **Guided lesson panel** — left sidebar with tasks, hints, and auto-checkmarks
-3. **Block cursor** — authentic Linux terminal look with a blinking block cursor
+1. **Virtual filesystem** - a tree of folders and files with `ls`, `cd`, and `cat`
+2. **Guided lesson panel** - left sidebar with tasks, hints, and auto-checkmarks
+3. **Block cursor** - authentic Linux terminal look with a blinking block cursor
 
 We created 7 new files:
 - `src/filesystem/fileSystem.ts` - the filesystem tree and path helpers
@@ -529,7 +529,7 @@ export type Lesson = {
 
 **`check: (entry: TaskCheck) => boolean`**
 
-Each task has a `check` function that receives what the user typed and what the terminal output was. It returns `true` if the task is satisfied. This makes validation flexible — some tasks just check the command name, others also verify the output.
+Each task has a `check` function that receives what the user typed and what the terminal output was. It returns `true` if the task is satisfied. This makes validation flexible - some tasks just check the command name, others also verify the output.
 
 **Why pass both command and output?**
 
@@ -563,7 +563,7 @@ const lessons: Lesson[] = [
 
 **Data-driven design**
 
-Lessons are just data — arrays of objects. Adding a new lesson means adding another object to the array. No component code changes needed. This is the same pattern we used for commands: data and logic are separate.
+Lessons are just data - arrays of objects. Adding a new lesson means adding another object to the array. No component code changes needed. This is the same pattern we used for commands: data and logic are separate.
 
 ### File: LessonPanel.tsx - The sidebar UI
 
@@ -628,13 +628,13 @@ function App() {
 
 ### Concepts to understand
 
-**`useCallback` — Memoized function**
+**`useCallback` - Memoized function**
 
 `useCallback` wraps a function so React doesn't recreate it on every render. Without it, `handleCommandExecuted` would be a new function object every time App re-renders, which would cause Terminal to re-render too (since its prop changed). With `useCallback`, the function only changes when `currentLessonIndex` changes.
 
 **Immutable state updates with Set**
 
-React state must be updated immutably — you can't modify the existing Set, you must create a new one:
+React state must be updated immutably - you can't modify the existing Set, you must create a new one:
 
 ```ts
 setCompletedTasks((prev) => {
@@ -649,9 +649,9 @@ Why? React uses reference equality (`===`) to detect changes. If you mutate the 
 
 **The callback pattern (child notifies parent)**
 
-Terminal doesn't know about lessons. It just calls `onCommandExecuted` after each command. App receives this callback and checks it against lesson tasks. This keeps Terminal focused on being a terminal, and App handles the lesson logic. This is called "inverse data flow" in React — data flows down (props), events flow up (callbacks).
+Terminal doesn't know about lessons. It just calls `onCommandExecuted` after each command. App receives this callback and checks it against lesson tasks. This keeps Terminal focused on being a terminal, and App handles the lesson logic. This is called "inverse data flow" in React - data flows down (props), events flow up (callbacks).
 
-**`prev.has(task.id) return prev` — Skip unnecessary updates**
+**`prev.has(task.id) return prev` - Skip unnecessary updates**
 
 If the task is already completed, we return the existing Set unchanged. This prevents a pointless re-render. It's a small optimization, but it's a good habit.
 
@@ -689,7 +689,7 @@ The real `<input>` is invisible (`opacity-0`, `w-0`, `h-0`). It captures keystro
 
 **`input[cursorPos] ?? " "`**
 
-When the cursor is at the end of the text, there's no character under it. We use `?? " "` to show a space character instead, giving the cursor block something to highlight. This matches real terminal behavior — the cursor always has a visible block, even on empty space.
+When the cursor is at the end of the text, there's no character under it. We use `?? " "` to show a space character instead, giving the cursor block something to highlight. This matches real terminal behavior - the cursor always has a visible block, even on empty space.
 
 **CSS blink animation**
 

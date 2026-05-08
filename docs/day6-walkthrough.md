@@ -1,10 +1,10 @@
-# Day 6 — Text Filters (LPIC-1 103.2)
+# Day 6 - Text Filters (LPIC-1 103.2)
 
 ## What we built
 
 Added a new guided lesson for LPIC-1 objective 103.2: "Process text streams using filters." This lesson teaches `head`, `tail`, `wc`, and `sort` through 7 hands-on tasks using a todo list file.
 
-No new commands were needed — all four were already implemented on Day 5. Today was about making them teachable.
+No new commands were needed - all four were already implemented on Day 5. Today was about making them teachable.
 
 ---
 
@@ -64,7 +64,7 @@ const allLines = node.content.split("\n");
 outputs.push(allLines.slice(-lines).join("\n"));
 ```
 
-Negative slice in JavaScript means "count from the end" — `slice(-2)` gives you the last 2 elements.
+Negative slice in JavaScript means "count from the end" - `slice(-2)` gives you the last 2 elements.
 
 ### `wc file`
 
@@ -130,4 +130,4 @@ The lesson uses `~/documents/todo.txt`:
 2. Select "103.2, Text Filters" from the lesson dropdown
 3. Follow the 7 tasks in order
 4. Try variations: `head -n 1 todo.txt`, `tail -n 4 todo.txt`, `wc -w todo.txt`
-5. Notice that `sort` reorders the numbered lines alphabetically (1, 2, 3...), not numerically — this is how real `sort` works too
+5. Notice that `sort` reorders the numbered lines alphabetically (1, 2, 3...), not numerically - this is how real `sort` works too

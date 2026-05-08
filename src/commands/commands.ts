@@ -29,10 +29,10 @@ function octalToPerm(octal: string): string {
 }
 
 const commands: Record<string, CommandFn> = {
-  // pwd — print working directory
+  // pwd - print working directory
   pwd: () => getCwd(),
 
-  // ls — list directory contents
+  // ls - list directory contents
   // Supports: ls, ls <path>, ls -l, ls -a, ls -la
   ls: (args) => {
     let showLong = false;
@@ -99,7 +99,7 @@ const commands: Record<string, CommandFn> = {
       .join("  ");
   },
 
-  // cd — change directory
+  // cd - change directory
   cd: (args) => {
     const target = args[0] ?? "/home/user";
     const newPath = normalizePath(getCwd(), target);
@@ -117,7 +117,7 @@ const commands: Record<string, CommandFn> = {
     return "";
   },
 
-  // cat — concatenate and print file contents
+  // cat - concatenate and print file contents
   cat: (args) => {
     if (args.length === 0) {
       return "cat: missing file operand";
@@ -141,7 +141,7 @@ const commands: Record<string, CommandFn> = {
     return outputs.join("\n");
   },
 
-  // head — show first N lines of a file (default 10)
+  // head - show first N lines of a file (default 10)
   head: (args) => {
     let lines = 10;
     const files: string[] = [];
@@ -174,7 +174,7 @@ const commands: Record<string, CommandFn> = {
     return outputs.join("\n");
   },
 
-  // tail — show last N lines of a file (default 10)
+  // tail - show last N lines of a file (default 10)
   tail: (args) => {
     let lines = 10;
     const files: string[] = [];
@@ -208,7 +208,7 @@ const commands: Record<string, CommandFn> = {
     return outputs.join("\n");
   },
 
-  // wc — word count (lines, words, chars)
+  // wc - word count (lines, words, chars)
   // Supports: wc <file>, wc -l <file>, wc -w <file>, wc -c <file>
   wc: (args) => {
     let showLines = false;
@@ -257,7 +257,7 @@ const commands: Record<string, CommandFn> = {
     return outputs.join("\n");
   },
 
-  // sort — sort lines of a file
+  // sort - sort lines of a file
   sort: (args) => {
     const reverse = args.includes("-r");
     const files = args.filter((a) => !a.startsWith("-"));
@@ -275,7 +275,7 @@ const commands: Record<string, CommandFn> = {
     return lines.join("\n");
   },
 
-  // uniq — filter adjacent duplicate lines
+  // uniq - filter adjacent duplicate lines
   uniq: (args) => {
     const countFlag = args.includes("-c");
     const files = args.filter((a) => !a.startsWith("-"));
@@ -304,7 +304,7 @@ const commands: Record<string, CommandFn> = {
     return result.map((r) => r.line).join("\n");
   },
 
-  // cut — extract columns from text
+  // cut - extract columns from text
   // Supports: cut -d<delim> -f<fields> <file>
   cut: (args) => {
     let delimiter = "\t";
@@ -343,7 +343,7 @@ const commands: Record<string, CommandFn> = {
       .join("\n");
   },
 
-  // grep — search for patterns in files
+  // grep - search for patterns in files
   // Supports: grep <pattern> <file>, grep -i, grep -c, grep -n, grep -v
   grep: (args) => {
     let ignoreCase = false;
@@ -408,7 +408,7 @@ const commands: Record<string, CommandFn> = {
     return outputs.join("\n");
   },
 
-  // mkdir — create a new directory
+  // mkdir - create a new directory
   mkdir: (args) => {
     if (args.length === 0) return "mkdir: missing operand";
 
@@ -433,7 +433,7 @@ const commands: Record<string, CommandFn> = {
     return "";
   },
 
-  // touch — create an empty file
+  // touch - create an empty file
   touch: (args) => {
     if (args.length === 0) return "touch: missing file operand";
 
@@ -457,7 +457,7 @@ const commands: Record<string, CommandFn> = {
     return "";
   },
 
-  // cp — copy files
+  // cp - copy files
   cp: (args) => {
     if (args.length < 2) return "cp: missing file operand";
 
@@ -484,7 +484,7 @@ const commands: Record<string, CommandFn> = {
     return "";
   },
 
-  // mv — move or rename
+  // mv - move or rename
   mv: (args) => {
     if (args.length < 2) return "mv: missing file operand";
 
@@ -513,7 +513,7 @@ const commands: Record<string, CommandFn> = {
     return "";
   },
 
-  // rm — remove files
+  // rm - remove files
   rm: (args) => {
     if (args.length === 0) return "rm: missing operand";
 
@@ -534,7 +534,7 @@ const commands: Record<string, CommandFn> = {
     return "";
   },
 
-  // chmod — change file permissions
+  // chmod - change file permissions
   // Supports octal mode: chmod 755 <file>
   chmod: (args) => {
     if (args.length < 2) return "chmod: missing operand";
@@ -555,7 +555,7 @@ const commands: Record<string, CommandFn> = {
     return "";
   },
 
-  // echo — print text
+  // echo - print text
   echo: (args) => {
     // Handle $VAR expansion
     return args
@@ -569,7 +569,7 @@ const commands: Record<string, CommandFn> = {
       .join(" ");
   },
 
-  // export — set environment variable
+  // export - set environment variable
   // Usage: export VAR=value
   export: (args) => {
     if (args.length === 0) {
@@ -592,7 +592,7 @@ const commands: Record<string, CommandFn> = {
     return "";
   },
 
-  // env — print environment variables
+  // env - print environment variables
   env: () => {
     const env = getAllEnv();
     return Object.entries(env)
@@ -600,7 +600,7 @@ const commands: Record<string, CommandFn> = {
       .join("\n");
   },
 
-  // find — search for files in directory tree
+  // find - search for files in directory tree
   // Supports: find <path> -name <pattern>
   find: (args) => {
     let searchPath = getCwd();
@@ -651,7 +651,7 @@ const commands: Record<string, CommandFn> = {
     return results.join("\n");
   },
 
-  // which — show the path of a command
+  // which - show the path of a command
   which: (args) => {
     if (args.length === 0) return "which: missing argument";
     const knownPaths: Record<string, string> = {
@@ -681,10 +681,10 @@ const commands: Record<string, CommandFn> = {
       .join("\n");
   },
 
-  // whoami — print current user
+  // whoami - print current user
   whoami: () => "user",
 
-  // uname — print system info
+  // uname - print system info
   uname: (args) => {
     if (args.includes("-a")) {
       return "Linux linux-trainer 5.15.0-91-generic #101-Ubuntu SMP x86_64 GNU/Linux";
@@ -692,7 +692,7 @@ const commands: Record<string, CommandFn> = {
     return "Linux";
   },
 
-  // history — show numbered list of past commands
+  // history - show numbered list of past commands
   history: () => {
     const entries = getHistory();
     if (entries.length === 0) return "No commands in history yet.";

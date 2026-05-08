@@ -217,7 +217,7 @@ function runCommandWithInput(
 export function parseCommand(input: string): CommandResult {
   let expanded = input.trim();
 
-  // !! (bang bang) — replace with the last command
+  // !! (bang bang) - replace with the last command
   if (expanded === "!!") {
     const last = getLastCommand();
     if (!last) return { output: "!!: event not found" };
@@ -258,12 +258,12 @@ export function parseCommand(input: string): CommandResult {
     }
 
     if (i === 0) {
-      // First command in the pipe — no stdin
+      // First command in the pipe - no stdin
       const handler = commands[command];
       if (!handler) return { output: `${command}: command not found` };
       output = handler(args);
     } else {
-      // Subsequent commands — receive previous output as stdin
+      // Subsequent commands - receive previous output as stdin
       output = runCommandWithInput(command, args, output);
     }
   }

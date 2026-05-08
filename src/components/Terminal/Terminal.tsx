@@ -3,7 +3,7 @@
 //
 // React concept: "lifting state up"
 // The history lives here (not in the child components) because BOTH children
-// need access to it — Output reads it, Input adds to it.
+// need access to it - Output reads it, Input adds to it.
 
 import { useState, useRef, useEffect } from "react";
 import TerminalOutput, { type HistoryEntry } from "./TerminalOutput";
@@ -20,11 +20,11 @@ export default function Terminal({ onCommandExecuted }: TerminalProps) {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [cwd, setCwdState] = useState(getCwd());
 
-  // Ref to the scrollable container — we'll auto-scroll to the bottom
+  // Ref to the scrollable container - we'll auto-scroll to the bottom
   // every time a new command is added, just like a real terminal.
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // This useEffect watches `history` — every time it changes (new command added),
+  // This useEffect watches `history` - every time it changes (new command added),
   // it scrolls the terminal to the bottom so the latest output is visible.
   useEffect(() => {
     if (scrollRef.current) {
@@ -80,9 +80,9 @@ export default function Terminal({ onCommandExecuted }: TerminalProps) {
       onClick={handleClick}
       className="h-screen bg-gray-900 text-sm font-mono p-4 overflow-y-auto cursor-text"
     >
-      {/* Welcome message — like when you first open a terminal */}
+      {/* Welcome message - like when you first open a terminal */}
       <div className="text-gray-500 mb-4">
-        <div>Welcome to Linux Terminal Trainer v0.3 — LPIC-1 Edition</div>
+        <div>Welcome to Linux Terminal Trainer v0.3 - LPIC-1 Edition</div>
         <div>Type a command and press Enter. Try "help" to get started.</div>
         <div className="mt-1">---</div>
       </div>

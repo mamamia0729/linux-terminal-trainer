@@ -1,4 +1,4 @@
-// useCommandHistory — navigates command history with Up/Down arrow keys.
+// useCommandHistory - navigates command history with Up/Down arrow keys.
 //
 // In a real terminal, pressing Up recalls the previous command.
 // Pressing Down goes forward again. If you were typing something
@@ -7,7 +7,7 @@
 //
 // The actual history storage lives in commands/historyState.ts
 // (a shared module). This hook only manages the navigation index
-// and draft — it doesn't own the history data.
+// and draft - it doesn't own the history data.
 
 import { useState, useCallback } from "react";
 import {
@@ -25,10 +25,10 @@ export function useCommandHistory() {
   // This way we can restore it when they arrow back down.
   const [draft, setDraft] = useState("");
 
-  // Record a command — called when the user presses Enter.
+  // Record a command - called when the user presses Enter.
   const push = useCallback((command: string) => {
     pushHistory(command);
-    // Reset index to point past the end — ready for new input
+    // Reset index to point past the end - ready for new input
     setIndex(getHistoryLength());
     setDraft("");
   }, []);
@@ -62,7 +62,7 @@ export function useCommandHistory() {
       const newIndex = index + 1;
       setIndex(newIndex);
 
-      // Past the last history entry — restore the draft
+      // Past the last history entry - restore the draft
       if (newIndex === len) {
         return draft;
       }

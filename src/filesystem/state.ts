@@ -1,4 +1,4 @@
-// Filesystem state — tracks where the user "is" in the virtual filesystem
+// Filesystem state - tracks where the user "is" in the virtual filesystem
 // and environment variables.
 //
 // We use module-level variables instead of React state because:
