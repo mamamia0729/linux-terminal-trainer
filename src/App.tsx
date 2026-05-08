@@ -10,7 +10,17 @@ import type { TaskCheck } from "./lessons/types";
 
 function App() {
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
-  const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
+  // OLD: no persistence, progress lost on refresh
+  // const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
+
+  // NEW: thaw from localStorage on page load so progress survives refresh
+  const [completedTasks, setCompletedTasks] = useState<Set<string>>(() => {
+    const saved = localStorage.getItem("completedTasks");
+    if (saved) {
+      return new Set<string>(JSON.parse(saved));
+    }
+    return new Set();
+  });
 
   // Called by Terminal after every command.
   // Checks the current lesson's tasks and marks any newly completed ones.
@@ -24,6 +34,8 @@ function App() {
             if (prev.has(task.id)) return prev;
             const next = new Set(prev);
             next.add(task.id);
+            // Freeze to localStorage so progress persists across refresh
+            localStorage.setItem("completedTasks", JSON.stringify([...next]));
             return next;
           });
         }
@@ -34,8 +46,10 @@ function App() {
 
   const handleSelectLesson = (index: number) => {
     setCurrentLessonIndex(index);
-    // Reset completed tasks when switching lessons
-    setCompletedTasks(new Set());
+    // OLD: wiped all progress when switching lessons
+    // setCompletedTasks(new Set());
+
+    // NEW: keep progress across lessons, localStorage handles persistence
   };
 
   return (
