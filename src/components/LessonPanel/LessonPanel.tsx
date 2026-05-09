@@ -21,7 +21,7 @@ export default function LessonPanel({
   const allDone = lesson.tasks.every((t) => completedTasks.has(t.id));
 
   return (
-    <div className="h-screen bg-gray-950 border-r border-gray-800 p-5 overflow-y-auto flex flex-col">
+    <div className="h-full bg-gray-950 border-r border-gray-800 p-5 overflow-y-auto flex flex-col">
       {/* Lesson selector */}
       <div className="mb-5">
         <label className="text-gray-500 text-xs uppercase tracking-wide block mb-2">

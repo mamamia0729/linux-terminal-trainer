@@ -1,26 +1,18 @@
 // App.tsx is the root component - everything starts here.
 // It manages lesson state and renders the two-column layout:
-// LessonPanel on the left, Terminal on the right.
+// AuthBar + LessonPanel on the left, Terminal on the right.
 
 import { useState, useCallback } from "react";
 import Terminal from "./components/Terminal/Terminal";
 import LessonPanel from "./components/LessonPanel/LessonPanel";
+import AuthBar from "./components/Auth/AuthBar";
 import lessons from "./lessons/lessonList";
+import { useProgress } from "./hooks/useProgress";
 import type { TaskCheck } from "./lessons/types";
 
 function App() {
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
-  // OLD: no persistence, progress lost on refresh
-  // const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
-
-  // NEW: thaw from localStorage on page load so progress survives refresh
-  const [completedTasks, setCompletedTasks] = useState<Set<string>>(() => {
-    const saved = localStorage.getItem("completedTasks");
-    if (saved) {
-      return new Set<string>(JSON.parse(saved));
-    }
-    return new Set();
-  });
+  const { completedTasks, completeTask, loading } = useProgress();
 
   // Called by Terminal after every command.
   // Checks the current lesson's tasks and marks any newly completed ones.
@@ -30,38 +22,38 @@ function App() {
 
       for (const task of lesson.tasks) {
         if (task.check(entry)) {
-          setCompletedTasks((prev) => {
-            if (prev.has(task.id)) return prev;
-            const next = new Set(prev);
-            next.add(task.id);
-            // Freeze to localStorage so progress persists across refresh
-            localStorage.setItem("completedTasks", JSON.stringify([...next]));
-            return next;
-          });
+          completeTask(task.id);
         }
       }
     },
-    [currentLessonIndex]
+    [currentLessonIndex, completeTask]
   );
 
   const handleSelectLesson = (index: number) => {
     setCurrentLessonIndex(index);
-    // OLD: wiped all progress when switching lessons
-    // setCompletedTasks(new Set());
-
-    // NEW: keep progress across lessons, localStorage handles persistence
   };
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-950">
+        <p className="text-gray-500 text-sm font-mono">Loading progress...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen">
-      {/* Left pane: lesson panel (30%) */}
-      <div className="w-[30%] min-w-[280px] max-w-[400px]">
-        <LessonPanel
-          lessons={lessons}
-          currentLessonIndex={currentLessonIndex}
-          completedTasks={completedTasks}
-          onSelectLesson={handleSelectLesson}
-        />
+      {/* Left pane: auth bar + lesson panel (30%) */}
+      <div className="w-[30%] min-w-[280px] max-w-[400px] flex flex-col">
+        <AuthBar />
+        <div className="flex-1 overflow-hidden">
+          <LessonPanel
+            lessons={lessons}
+            currentLessonIndex={currentLessonIndex}
+            completedTasks={completedTasks}
+            onSelectLesson={handleSelectLesson}
+          />
+        </div>
       </div>
 
       {/* Right pane: terminal (70%) */}
